@@ -1,12 +1,14 @@
 package com.menushare.menushare.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Menu {
 
     @Id
@@ -19,8 +21,15 @@ public class Menu {
 
     private Long itemPrice;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "qr_code_id")
     private QrCode qrCodes;
+
+    public Menu(String itemName, String itemDescription, Long itemPrice) {
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+        this.itemPrice = itemPrice;
+    }
 
 
 }
