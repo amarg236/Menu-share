@@ -8,4 +8,5 @@ import java.util.List;
 public interface MenuService {
     List<Menu> getMenu();
     Menu createMenu(MenuRequest menu);
+    Menu findMenu(Long menuId);
 }
