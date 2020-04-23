@@ -25,8 +25,6 @@ public class MenuController {
     @PostMapping("/createMenu")
     public MenuRequest createMenu(@RequestBody MenuRequest menuRequest){
 
-
-
         menuService.createMenu(menuRequest);
         return menuRequest;
     }
