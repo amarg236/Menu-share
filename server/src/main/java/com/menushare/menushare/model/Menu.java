@@ -32,7 +32,7 @@ public class Menu {
     }
 
     public String json() {
-        return "{\"itemName\": " + this.getItemName() + ", " + "\"itemDescription\": " + this.getItemDescription() + ", \"itemPrice\": " + this.getItemPrice() + "}";
+        return "{\"itemName\": " +  "\"" + this.getItemName() + "\""  + ", " + "\"itemDescription\": " + "\"" + this.getItemDescription() + "\"" + ", \"itemPrice\": " + this.getItemPrice() + "}";
     }
 
 
