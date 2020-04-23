@@ -31,5 +31,9 @@ public class Menu {
         this.itemPrice = itemPrice;
     }
 
+    public String json() {
+        return "{\"itemName\": " + this.getItemName() + ", " + "\"itemDescription\": " + this.getItemDescription() + ", \"itemPrice\": " + this.getItemPrice() + "}";
+    }
+
 
 }
