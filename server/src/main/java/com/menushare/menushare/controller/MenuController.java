@@ -32,10 +32,11 @@ import java.util.List;
 @CrossOrigin
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping("/menu")
 public class MenuController {
 
     private final MenuService menuService;
+
     private final QrCodeService qrCodeService;
 
     @RequestMapping("/getMenu")
@@ -44,9 +45,9 @@ public class MenuController {
     }
 
     @PostMapping("/createMenu")
-    public MenuRequest createMenu(@RequestBody MenuRequest menuRequest){
+    public ResponseEntity<MenuRequest> createMenu(@RequestBody MenuRequest menuRequest){
         menuService.createMenu(menuRequest);
-        return menuRequest;
+        return ResponseEntity.status(HttpStatus.CREATED).body(menuRequest);
     }
 
 
@@ -88,6 +89,7 @@ public class MenuController {
 
         JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
         System.out.println("Barcode json is " + jsonObject);
+        log.info(String.valueOf(jsonObject));
 
         MenuResponse menuResponse = new MenuResponse(jsonObject.get("itemName").toString(),
                                                      jsonObject.get("itemDescription").toString(),
