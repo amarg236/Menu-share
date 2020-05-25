@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -64,7 +65,7 @@ public class MenuController {
         log.info(qrImagePath);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(menu.json(), BarcodeFormat.QR_CODE, 200, 200);
+                barcodeWriter.encode(menu.json().trim(), BarcodeFormat.QR_CODE, 200, 200);
 
         Path path = FileSystems.getDefault().getPath(qrImagePath);
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
@@ -77,15 +78,17 @@ public class MenuController {
 //        return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 
-    @GetMapping("/readQrCode")
-    public ResponseEntity<MenuResponse> readQrCodeImage() throws IOException, FormatException, ChecksumException, NotFoundException {
-        InputStream barCodeInputStream = new FileInputStream("./src/main/resources/qr_images/Biscoff.png");
+    @GetMapping(value="/readQrCode", consumes = {"multipart/form-data"})
+    public ResponseEntity<MenuResponse> readQrCodeImage(@RequestPart("file") MultipartFile file) throws IOException, FormatException, ChecksumException, NotFoundException {
+        InputStream barCodeInputStream = file.getInputStream();
         BufferedImage barCodeBufferedImage = ImageIO.read(barCodeInputStream);
 
         LuminanceSource source = new BufferedImageLuminanceSource(barCodeBufferedImage);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         Reader reader = new MultiFormatReader();
         Result result = reader.decode(bitmap);
+
+        log.info(String.valueOf(result));
 
         JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
         System.out.println("Barcode json is " + jsonObject);
@@ -94,6 +97,8 @@ public class MenuController {
         MenuResponse menuResponse = new MenuResponse(jsonObject.get("itemName").toString(),
                                                      jsonObject.get("itemDescription").toString(),
                                                      jsonObject.get("itemPrice").getAsLong());
+
+
         return ResponseEntity.status(HttpStatus.OK).body(menuResponse);
 
     }
